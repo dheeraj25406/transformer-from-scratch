@@ -1,0 +1,13 @@
+__pycache__/
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.h5
+*.npz
+data/
+datasets/
+runs/
+checkpoints/
+.ipynb_checkpoints/
+.DS_Store
