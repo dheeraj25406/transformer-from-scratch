@@ -10,7 +10,7 @@ No pretrained models were used. The architecture, masking logic, decoding strate
 
 ---
 
-## 🚀 Project Overview
+##  Project Overview
 
 This project includes:
 
@@ -29,7 +29,7 @@ Dataset used:
 
 ---
 
-## 📊 Results
+##  Results
 
 Training BLEU: **~38.5**
 
@@ -45,7 +45,7 @@ Minimal train-validation gap indicates stable generalization.
 
 ---
 
-## 🧠 Architecture Details
+##  Architecture Details
 
 - **final_model/** – Final trained model and tokenizers
 - **runs/** – Training logs and experiment tracking
@@ -82,7 +82,7 @@ Minimal train-validation gap indicates stable generalization.
 
 ---
 
-## 🧮 Attention Formula
+##  Attention Formula
 
 Scaled Dot Product Attention:
 
@@ -94,7 +94,7 @@ MultiHead(Q,K,V) = Concat(head₁,...,headₕ) Wᵒ
 
 ---
 
-## 🔐 Masking Strategy
+##  Masking Strategy
 
 Two masks are used:
 
@@ -109,7 +109,7 @@ Mask is applied before softmax to prevent information leakage.
 
 ---
 
-## 🔄 Decoding Strategy
+##  Decoding Strategy
 
 Greedy autoregressive decoding:
 
@@ -145,10 +145,11 @@ dataset = dataset.train_test_split(test_size=0.1)
 BLEU computed using:
 
 sacrebleu.corpus_bleu(predictions, [references])
+```
 
 ---
 
-## 🧩 Key Learnings
+##  Key Learnings
 
 - **Tensor shape management** in multi-head attention
 - **Broadcasting behavior** in masking mechanisms
@@ -159,7 +160,7 @@ sacrebleu.corpus_bleu(predictions, [references])
 
 ---
 
-## 🚀 Future Improvements
+##  Future Improvements
 
 - Implement **Beam Search decoding**
 - Add **Label Smoothing** for better generalization
@@ -170,7 +171,7 @@ sacrebleu.corpus_bleu(predictions, [references])
 
 ---
 
-## 📌 Why This Project Matters
+##  Why This Project Matters
 
 This project demonstrates:
 
@@ -182,10 +183,8 @@ This project demonstrates:
 
 ---
 
-## 👤 Author
+##  Author
 
 **Dheeraj Alamuri**
 B.Tech (AI/ML Focus)
 Interested in ML Engineering & Generative AI Systems
-
-```
