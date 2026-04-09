@@ -146,6 +146,8 @@ BLEU computed using:
 
 sacrebleu.corpus_bleu(predictions, [references])
 
+```
+
 ---
 
 ## 🧩 Key Learnings
@@ -187,5 +189,3 @@ This project demonstrates:
 **Dheeraj Alamuri**
 B.Tech (AI/ML Focus)
 Interested in ML Engineering & Generative AI Systems
-
-```
