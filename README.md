@@ -1,192 +1,258 @@
 # Transformer From Scratch (EN → IT Translation)
 
-A complete Encoder-Decoder Transformer implementation built from scratch in PyTorch for English → Italian machine translation.
+A complete implementation of the original **Transformer Encoder–Decoder architecture** built entirely from scratch in **PyTorch** for English → Italian machine translation.
 
-This project implements the core Transformer architecture introduced in:
+This project recreates the architecture proposed in the paper:
 
-> "Attention Is All You Need" – Vaswani et al.
+> **Attention Is All You Need**  
+> Vaswani et al., 2017
 
-No pretrained models were used. The architecture, masking logic, decoding strategy, and evaluation pipeline were implemented manually.
+Instead of relying on pretrained models, every major component of the Transformer was implemented manually to gain a deeper understanding of modern sequence-to-sequence architectures.
 
 ---
 
-##  Project Overview
+# Features
 
-This project includes:
-
-- Custom Transformer (Encoder-Decoder)
-- Multi-Head Attention
+- Transformer implemented completely from scratch
+- Multi-Head Self Attention
+- Scaled Dot Product Attention
 - Positional Encoding
-- Masked Self-Attention (Causal Masking)
-- Cross-Attention
+- Residual Connections
+- Layer Normalization
+- Feed Forward Networks
+- Encoder–Decoder Cross Attention
+- Causal Masking
 - Greedy Autoregressive Decoding
-- BLEU Evaluation using SacreBLEU
-- Validation Split Evaluation
-
-Dataset used:
-
-- OPUS Books (English → Italian)
+- BLEU Score Evaluation
+- End-to-End Training Pipeline
 
 ---
 
-##  Results
+# Tech Stack
 
-Training BLEU: **~38.5**
-
-Validation BLEU (10% held-out split): **~37.98**
-
-Evaluation performed using:
-
+- Python
+- PyTorch
+- Hugging Face Datasets
+- Hugging Face Tokenizers
+- TensorBoard
 - SacreBLEU
-- Greedy decoding
-- 200 validation samples
-
-Minimal train-validation gap indicates stable generalization.
 
 ---
 
-##  Architecture Details
+# Dataset
 
-- **final_model/** – Final trained model and tokenizers
-- **runs/** – Training logs and experiment tracking
-- **weights/** – Intermediate checkpoints
-- **transformer.py** – Full Encoder-Decoder Transformer implementation
-- **train.py** – Model training pipeline
-- **infer.py** – Inference / translation script
-- **evaluate.py** – BLEU score evaluation
-- **transformer.ipynb** – Development notebook
-- **tokenizer_en.json / tokenizer_it.json** – Tokenizer files
-- **README.md** – Project documentation
-- **LICENSE** – License information
+**OPUS Books**
+
+Task:
+
+```
+English → Italian Machine Translation
+```
+
+Custom Word-Level tokenizers are trained separately for both English and Italian.
 
 ---
 
-### Encoder
+# Model Architecture
 
-- Token Embedding
+The implementation closely follows the original Transformer architecture.
+
+<p align="center">
+  <img src="assets/attention_research1_1.webp" alt="Transformer Architecture" width="900"/>
+</p>
+
+## Encoder
+
+- Input Embedding
 - Positional Encoding
-- Multi-Head Self-Attention
+- Multi-Head Self Attention
 - Feed Forward Network
-- Residual Connections + LayerNorm
+- Residual Connections
+- Layer Normalization
 
-### Decoder
+---
 
-- Masked Self-Attention
-- Cross-Attention (Encoder-Decoder Attention)
+## Decoder
+
+- Masked Multi-Head Self Attention
+- Encoder–Decoder Cross Attention
 - Feed Forward Network
-- Residual Connections + LayerNorm
-
-### Output Layer
-
-- Linear projection to target vocabulary size
+- Residual Connections
+- Layer Normalization
 
 ---
 
-##  Attention Formula
+## Output Layer
 
-Scaled Dot Product Attention:
-
-Attention(Q, K, V) = softmax((QKᵀ) / √dₖ) V
-
-Multi-Head Attention:
-
-MultiHead(Q,K,V) = Concat(head₁,...,headₕ) Wᵒ
+The decoder output is projected to the target vocabulary using a linear layer followed by LogSoftmax.
 
 ---
 
-##  Masking Strategy
+# Attention
 
-Two masks are used:
+Scaled Dot Product Attention
 
-1. Source Mask  
-   Allows full attention across source tokens.
+```
+Attention(Q,K,V)
+=
+softmax(QKᵀ / √dₖ)V
+```
 
-2. Target Causal Mask  
-   Uses lower triangular masking (`torch.tril`)  
-   Prevents decoder from attending to future tokens.
+Multi-Head Attention
 
-Mask is applied before softmax to prevent information leakage.
-
----
-
-##  Decoding Strategy
-
-Greedy autoregressive decoding:
-
-- Start with `[SOS]`
-- Predict next token
-- Append token
-- Repeat until `[EOS]` or max length
-
-No beam search was used in current implementation.
+```
+MultiHead(Q,K,V)
+=
+Concat(head₁,...,headₕ)Wᵒ
+```
 
 ---
 
+# Masking Strategy
+
+Two masking mechanisms are implemented.
+
+### Source Mask
+
+Allows the encoder to attend to all valid source tokens.
+
+### Target Causal Mask
+
+Uses a lower triangular mask to prevent the decoder from accessing future tokens during training and inference.
+
 ---
 
-## ⚙️ Training Details
+# Training Configuration
 
-- Device: Apple MPS
-- Epochs: 20
-- Batch Size: 8
-- Optimizer: Adam
-- Loss: Cross-Entropy
-- Dataset: OPUS Books EN-IT
+| Parameter | Value |
+|-----------|------:|
+| Framework | PyTorch |
+| Device | Apple MPS |
+| Epochs | 20 |
+| Batch Size | 8 |
+| Optimizer | Adam |
+| Loss | Cross Entropy |
+| Dataset | OPUS Books |
 
 ---
 
-## 📈 Evaluation
+# Evaluation
 
-Evaluation is performed on a 10% held-out split:
+Model quality is evaluated using **SacreBLEU** on a held-out validation split.
+
+Evaluation pipeline includes:
+
+- Greedy Decoding
+- Corpus-level BLEU Score
+- Validation Set Evaluation
+
+Example:
 
 ```python
-dataset = dataset.train_test_split(test_size=0.1)
-
-BLEU computed using:
-
-sacrebleu.corpus_bleu(predictions, [references])
-```
-
+bleu = sacrebleu.corpus_bleu(predictions, [references])
 ```
 
 ---
 
-##  Key Learnings
+# Repository Structure
 
-- **Tensor shape management** in multi-head attention
-- **Broadcasting behavior** in masking mechanisms
-- **Importance of scaling** in dot-product attention
-- **Autoregressive decoding logic** in sequence generation
-- **Proper validation split** for fair model evaluation
-- **BLEU metric limitations** and interpretation nuances
-
----
-
-##  Future Improvements
-
-- Implement **Beam Search decoding**
-- Add **Label Smoothing** for better generalization
-- Introduce **Learning Rate Warmup (Noam Scheduler)**
-- Train on a **larger dataset** for improved performance
-- Add **Attention visualization** for interpretability
-- Compare against a **pretrained MarianMT baseline**
-
----
-
-##  Why This Project Matters
-
-This project demonstrates:
-
-- Deep understanding of **Transformer internals**
-- Ability to implement the architecture **from scratch**
-- A complete **training and evaluation pipeline**
-- Clear **quantitative performance reporting**
-- Practical experience with real-world NLP workflows
+```
+.
+├── final_model/
+│   ├── transformer_weights.pt
+│   ├── tokenizer_en.json
+│   └── tokenizer_it.json
+│
+├── transformer.py          # Transformer architecture
+├── transformer.ipynb       # Development notebook
+├── infer.py                # Translation inference
+├── evaluate.py             # BLEU evaluation
+├── tokenizer_en.json
+├── tokenizer_it.json
+├── README.md
+└── LICENSE
+```
 
 ---
 
-##  Author
+# Key Concepts Implemented
+
+- Transformer Encoder
+- Transformer Decoder
+- Multi-Head Attention
+- Cross Attention
+- Positional Encoding
+- Layer Normalization
+- Residual Connections
+- Feed Forward Networks
+- Padding Masks
+- Causal Masks
+- Teacher Forcing
+- Greedy Decoding
+- BLEU Evaluation
+
+---
+
+# Learning Outcomes
+
+Through this project I gained practical experience with:
+
+- Building deep learning architectures from research papers
+- Implementing attention mechanisms from scratch
+- Tensor manipulation for multi-head attention
+- Sequence-to-sequence learning
+- Machine Translation
+- Tokenization pipelines
+- Model evaluation using BLEU
+- End-to-end training and inference in PyTorch
+
+---
+
+# Future Improvements
+
+- Beam Search Decoding
+- Label Smoothing
+- Learning Rate Warmup (Noam Scheduler)
+- Mixed Precision Training
+- Attention Visualization
+- Larger multilingual datasets
+- Comparison against pretrained translation models
+
+---
+
+# Running the Project
+
+Clone the repository.
+
+```bash
+git clone https://github.com/dheeraj25406/transformer-from-scratch.git
+cd transformer-from-scratch
+```
+
+Install dependencies.
+
+```bash
+pip install -r requirements.txt
+```
+
+Run inference.
+
+```bash
+python infer.py
+```
+
+Evaluate the model.
+
+```bash
+python evaluate.py
+```
+
+---
+
+# Author
 
 **Dheeraj Alamuri**
-B.Tech (AI/ML Focus)
-Interested in ML Engineering & Generative AI Systems
+
+B.Tech (Artificial Intelligence)
+
+Interested in Machine Learning Engineering, Deep Learning, NLP, Generative AI, and Large Language Models.
