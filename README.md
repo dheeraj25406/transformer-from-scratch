@@ -58,7 +58,7 @@ Custom Word-Level tokenizers are trained separately for both English and Italian
 The implementation closely follows the original Transformer architecture.
 
 <p align="center">
-  <img src="assets/attention_research1_1.webp" alt="Transformer Architecture" width="900"/>
+  <img src="./assets/attention_research_1.webp" alt="Transformer Architecture" width="900"/>
 </p>
 
 ## Encoder
